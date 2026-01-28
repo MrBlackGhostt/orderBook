@@ -12,8 +12,10 @@ pub struct CreateMarket<'info> {
     #[account(mut)]
     pub market_signer: Signer<'info>,
 
+    #[account(init_if_needed, payer=market_signer,mint::decimals=6, mint::authority = market, seeds=[b"market-mint-base", market_signer.key.as_ref(), ],bump)]
     pub base_mint: InterfaceAccount<'info, Mint>,
 
+    #[account(init_if_needed, payer=market_signer,mint::decimals=6, mint::authority = market,  seeds=[b"market-mint-quote", market_signer.key.as_ref()],bump)]
     pub quote_mint: InterfaceAccount<'info, Mint>,
 
     #[account(
@@ -25,12 +27,12 @@ pub struct CreateMarket<'info> {
     )]
     pub market: Account<'info, Market>,
     // Vault which hold hte base_mint
-    #[account(init_if_needed,payer= market_signer, associated_token::mint= base_mint, associated_token::authority = market,
-    associated_token::token_program = token_program)]
+    #[account(init_if_needed,payer= market_signer, token::mint= base_mint, token::authority = market,
+    token::token_program = token_program,  seeds=[b"market-mint-base-ata", market_signer.key.as_ref(), base_mint.key().as_ref()],bump)]
     pub base_mint_vault: InterfaceAccount<'info, TokenAccount>,
 
-    #[account(init_if_needed,payer= market_signer, associated_token::mint= quote_mint, associated_token::authority = market,
-    associated_token::token_program = token_program)]
+    #[account(init_if_needed,payer= market_signer, token::mint= quote_mint, token::authority = market,
+    token::token_program = token_program,  seeds=[b"market-mint-quote-ata", market_signer.key.as_ref(), quote_mint.key().as_ref()],bump)]
     pub quote_vault: InterfaceAccount<'info, TokenAccount>,
 
     pub token_program: Interface<'info, TokenInterface>,
@@ -40,7 +42,7 @@ pub struct CreateMarket<'info> {
 
 impl<'info> CreateMarket<'info> {
     pub fn create_market(&mut self, fee_bps: u16) -> Result<()> {
-        let mut markett = &mut self.market;
+        let markett = &mut self.market;
         markett.fee_bps = fee_bps;
         markett.base_mint = self.base_mint.key();
         markett.quote_mint = self.quote_mint.key();
