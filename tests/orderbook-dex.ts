@@ -22,6 +22,8 @@ describe("orderbook-dex", () => {
   // We will initialize these in the 'before' block
   let base_mint: anchor.web3.PublicKey;
   let quote_mint: anchor.web3.PublicKey;
+  let base_mint_valut: anchor.web3.PublicKey;
+  let quote_mint_valut: anchor.web3.PublicKey;
   let trader_base_mint_acc: anchor.web3.PublicKey;
   let trader_quote_mint_acc: anchor.web3.PublicKey;
 
@@ -66,7 +68,37 @@ describe("orderbook-dex", () => {
       6
     );
 
+    // Derive Market PDA
+    [marketPda] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("market"), base_mint.toBuffer(), quote_mint.toBuffer()],
+      program.programId
+    );
+
+    // Derive OrderBook PDA
+    [orderBookPda] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("market_orderBook"), marketPda.toBuffer()],
+      program.programId
+    );
+
     // 3. Create Trader Token Accounts
+    const baseMintVaultAta = await getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      market_creator,
+      base_mint,
+      marketPda,
+      true
+    );
+    base_mint_valut = baseMintVaultAta.address;
+
+    const quoteMintVaultAta = await getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      market_creator,
+      quote_mint,
+      marketPda,
+      true
+    );
+    quote_mint_valut = quoteMintVaultAta.address;
+
     const traderBaseAta = await getOrCreateAssociatedTokenAccount(
       provider.connection,
       trader,
@@ -100,18 +132,6 @@ describe("orderbook-dex", () => {
       trader_quote_mint_acc,
       market_creator,
       1000 * 10 ** 6 // 1000 Quote tokens
-    );
-
-    // Derive Market PDA
-    [marketPda] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from("market"), base_mint.toBuffer(), quote_mint.toBuffer()],
-      program.programId
-    );
-
-    // Derive OrderBook PDA
-    [orderBookPda] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from("market_orderBook"), marketPda.toBuffer()],
-      program.programId
     );
   });
 
@@ -271,12 +291,21 @@ describe("orderbook-dex", () => {
     let orderId = new anchor.BN(4);
     let side = { bid: {} };
 
+    let traderQuoteAtaBefore = await provider.connection.getTokenAccountBalance(
+      trader_quote_mint_acc
+    );
+
     const tx = await program.methods
       .cancelOrder(side, orderId)
       .accountsPartial({
         trader: trader.publicKey,
         market: marketPda,
         orderBook: orderBookPda,
+        baseMint: base_mint,
+        quoteMint: quote_mint,
+
+        quoteMintVault: quote_mint_valut,
+        baseMintVault: base_mint_valut,
         traderBaseMintAccount: trader_base_mint_acc,
         traderQuoteMintAccount: trader_quote_mint_acc,
         tokenProgram: TOKEN_PROGRAM_ID,
@@ -288,5 +317,15 @@ describe("orderbook-dex", () => {
     let orderBookAccount = await program.account.orderBook.fetch(orderBookPda);
 
     assert.equal(orderBookAccount.bids.length, 49);
+
+    let traderQuoteAtaAfter = await provider.connection.getTokenAccountBalance(
+      trader_quote_mint_acc
+    );
+
+    assert.isAbove(
+      Number(traderQuoteAtaAfter.value.amount),
+      Number(traderQuoteAtaBefore.value.amount),
+      "token balance is not increase mean refund not happen"
+    );
   });
 });

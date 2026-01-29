@@ -30,7 +30,8 @@ pub mod orderbook_dex {
         Ok(())
     }
     pub fn cancel_order(ctx: Context<CancelOrder>, side: Side, order_id: u64) -> Result<()> {
-        ctx.accounts.cancel_order(side, order_id)?;
+        let bump = ctx.bumps.market;
+        ctx.accounts.cancel_order(side, order_id, bump)?;
         Ok(())
     }
 }
