@@ -1,12 +1,36 @@
 use anchor_lang::prelude::*;
 
-#[derive(AnchorDeserialize, AnchorSerialize, Clone, PartialEq)]
+#[derive(AnchorDeserialize, AnchorSerialize, Clone, PartialEq, InitSpace)]
 pub enum Side {
-    Buy,
-    Sell,
+    Bid,
+    Ask,
+}
+
+#[derive(AnchorDeserialize, AnchorSerialize, Clone, InitSpace, Copy)]
+pub struct LimitOrder {
+    pub owner: Pubkey,
+    pub price: u64,
+    pub amount: u64,
+    pub order_id: u64,
 }
 
 #[account]
+#[derive(InitSpace)]
+pub struct OrderBook {
+    pub market: Pubkey,
+    pub next_order_id: u64,
+    #[max_len(50)]
+    pub bids: Vec<LimitOrder>,
+    #[max_len(50)]
+    pub asks: Vec<LimitOrder>,
+}
+
+impl OrderBook {
+    pub const MAX_ORDERS: usize = 50;
+}
+
+#[account]
+#[derive(InitSpace)]
 pub struct Market {
     pub base_mint: Pubkey,
     pub quote_mint: Pubkey,
@@ -17,14 +41,4 @@ pub struct Market {
 }
 impl Market {
     pub const LEN: usize = 32 * 5 + 2;
-}
-
-#[account]
-pub struct Order {
-    pub owner: Pubkey,
-    pub market: Pubkey,
-    pub side: Side,
-    pub price: u64,
-    pub amount: u64,
-    pub filled: u64,
 }
