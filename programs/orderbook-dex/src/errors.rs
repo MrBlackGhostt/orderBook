@@ -6,4 +6,8 @@ pub enum OrderBookError {
     OrderBookFull,
     #[msg("Error in calulting the Bid Amount")]
     ErrorInMultiply,
+    #[msg("Enter Valid Value")]
+    ErrorValueInvalid,
+    #[msg("The Ata is invaild")]
+    InvalidAta,
 }
