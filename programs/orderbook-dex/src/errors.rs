@@ -10,4 +10,6 @@ pub enum OrderBookError {
     ErrorValueInvalid,
     #[msg("The Ata is invaild")]
     InvalidAta,
+    #[msg("The Ata not found")]
+    AtaNotFound,
 }

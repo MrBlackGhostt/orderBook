@@ -34,4 +34,13 @@ pub mod orderbook_dex {
         ctx.accounts.cancel_order(side, order_id, bump)?;
         Ok(())
     }
+
+    pub fn match_order<'info>(
+        ctx: Context<'_, '_, 'info, 'info, MatchOrders<'info>>,
+    ) -> Result<()> {
+        let bump = ctx.bumps.market;
+        let remaining_accounts = ctx.remaining_accounts;
+        ctx.accounts.match_orders(bump, remaining_accounts)?;
+        Ok(())
+    }
 }
