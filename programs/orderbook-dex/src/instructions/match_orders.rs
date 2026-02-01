@@ -72,7 +72,7 @@ impl<'info> MatchOrders<'info> {
 
                 //Calculate the fee
                 let total_fee = (quote_amount * self.market.fee_bps as u64) / 10000;
-                let asker_fee = total_fee / 2;
+                let asker_fee = total_fee;
 
                 let bidder_base_ata = find_ata(remaining, bid.owner, self.base_mint.key())?;
                 let asker_quote_ata = find_ata(remaining, ask.owner, self.quote_mint.key())?;
@@ -95,7 +95,7 @@ impl<'info> MatchOrders<'info> {
 
                 token_interface::transfer_checked(
                     ctx_quote,
-                    quote_amount - asker_fee,
+                    (quote_amount - asker_fee),
                     self.quote_mint.decimals,
                 )?;
 
@@ -157,12 +157,13 @@ impl<'info> MatchOrders<'info> {
                     market_fee,
                     self.quote_mint.decimals,
                 )?;
-
-                msg!(
-                    "After match - Bid amount={}, Ask amount={}",
-                    self.order_book.bids[0].amount,
-                    self.order_book.asks[0].amount
-                );
+                if self.order_book.bids.len() > 0 && self.order_book.asks.len() > 0 {
+                    msg!(
+                        "After match - Bid amount={}, Ask amount={}",
+                        self.order_book.bids[0].amount,
+                        self.order_book.asks[0].amount
+                    );
+                };
                 msg!(
                     "Bids count={}, Asks count={}",
                     self.order_book.bids.len(),

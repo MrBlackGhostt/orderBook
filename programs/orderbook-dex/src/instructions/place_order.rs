@@ -58,7 +58,7 @@ pub struct PlaceOrder<'info> {
         bump
     )]
     pub order_book: Account<'info, OrderBook>,
-    
+
     pub system_program: Program<'info, System>,
     pub associated_token_program: Program<'info, AssociatedToken>,
 }
@@ -79,7 +79,10 @@ impl<'info> PlaceOrder<'info> {
 
         match side {
             Side::Bid => {
-                require!(order_book.bids.len() < OrderBook::MAX_ORDERS, OrderBookError::OrderBookFull);
+                require!(
+                    order_book.bids.len() < OrderBook::MAX_ORDERS,
+                    OrderBookError::OrderBookFull
+                );
 
                 let quote_price = amount.checked_mul(price).unwrap();
 
@@ -101,7 +104,10 @@ impl<'info> PlaceOrder<'info> {
                 order_book.bids.push(new_order);
             }
             Side::Ask => {
-                require!(order_book.asks.len() < OrderBook::MAX_ORDERS, OrderBookError::OrderBookFull);
+                require!(
+                    order_book.asks.len() < OrderBook::MAX_ORDERS,
+                    OrderBookError::OrderBookFull
+                );
 
                 let ctx_acc = TransferChecked {
                     from: self.trader_base_mint_account.to_account_info(),
@@ -113,7 +119,7 @@ impl<'info> PlaceOrder<'info> {
                 let ctx = CpiContext::new(self.token_program.to_account_info(), ctx_acc);
 
                 token_interface::transfer_checked(ctx, amount, self.base_mint.decimals)?;
-                
+
                 order_book.asks.push(new_order);
             }
         };

@@ -50,8 +50,7 @@ impl<'info> CancelOrder<'info> {
         let market = self.market.key();
         let quote_mint = self.quote_mint.key();
         let base_mint = self.base_mint.key();
-       
-    
+
         let seeds = &[b"market", base_mint.as_ref(), quote_mint.as_ref(), &[bump]];
 
         let signer_seeds = &[&seeds[..]];
