@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { Github, Twitter } from "lucide-react";
 
 export function Navbar() {
   const { connected } = useWallet();
@@ -19,9 +20,14 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-8">
-            <Link href="/" className="text-xl font-bold text-white">
-              OrderBook DEX
-            </Link>
+            <div className="flex items-center space-x-3">
+              <Link href="/" className="text-xl font-bold text-white">
+                OrderBook DEX
+              </Link>
+              <span className="px-2 py-0.5 bg-orange-600/20 border border-orange-600/50 rounded text-orange-400 text-xs font-medium">
+                DEVNET
+              </span>
+            </div>
             <div className="hidden md:flex space-x-4">
               <Link
                 href="/"
@@ -38,8 +44,32 @@ export function Navbar() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
+            {/* Social Links */}
+            <div className="hidden sm:flex items-center space-x-2">
+              <a
+                href="https://x.com/HKsoldev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+                title="Follow on X/Twitter"
+              >
+                <Twitter className="w-4 h-4" />
+              </a>
+              <a
+                href="https://github.com/MrBlackGhostt"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+                title="GitHub Profile"
+              >
+                <Github className="w-4 h-4" />
+              </a>
+            </div>
+
             {mounted && connected && (
-              <span className="text-green-400 text-sm">Connected</span>
+              <span className="text-green-400 text-sm hidden lg:inline">
+                Connected
+              </span>
             )}
             {mounted ? (
               <WalletMultiButton className="!bg-purple-600 hover:!bg-purple-700" />
