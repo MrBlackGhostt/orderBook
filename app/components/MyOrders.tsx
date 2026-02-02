@@ -32,9 +32,13 @@ export function MyOrders({
 
   if (!publicKey) {
     return (
-      <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
-        <h2 className="text-lg font-semibold mb-4">My Orders</h2>
-        <p className="text-gray-400 text-sm">Connect wallet to view orders</p>
+      <div className="bg-[#12121a] border border-[#1e1e2e] rounded-xl overflow-hidden">
+        <div className="px-4 py-3 border-b border-[#1e1e2e]">
+          <h2 className="text-sm font-medium text-white">My Orders</h2>
+        </div>
+        <div className="p-4">
+          <p className="text-zinc-500 text-xs">Connect wallet to view orders</p>
+        </div>
       </div>
     );
   }
@@ -99,52 +103,56 @@ export function MyOrders({
   };
 
   return (
-    <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
-      <h2 className="text-lg font-semibold mb-4">My Orders</h2>
+    <div className="bg-[#12121a] border border-[#1e1e2e] rounded-xl overflow-hidden">
+      <div className="px-4 py-3 border-b border-[#1e1e2e]">
+        <h2 className="text-sm font-medium text-white">My Orders</h2>
+      </div>
 
-      {myOrders.length === 0 ? (
-        <p className="text-gray-400 text-sm">No open orders</p>
-      ) : (
-        <div className="space-y-2">
-          <div className="grid grid-cols-5 gap-2 text-xs text-gray-500 pb-2 border-b border-gray-800">
-            <span>Side</span>
-            <span>Price</span>
-            <span>Amount</span>
-            <span>ID</span>
-            <span></span>
-          </div>
-          {myOrders.map((order) => (
-            <div
-              key={order.orderId}
-              className="grid grid-cols-5 gap-2 items-center text-sm py-2"
-            >
-              <span
-                className={
-                  order.side === "bid" ? "text-green-400" : "text-red-400"
-                }
-              >
-                {order.side === "bid" ? "Buy" : "Sell"}
-              </span>
-              <span>{order.price.toFixed(4)}</span>
-              <span>{order.amount.toFixed(4)}</span>
-              <span className="text-gray-500 font-mono text-xs">
-                #{order.orderId.slice(-4)}
-              </span>
-              <button
-                onClick={() => handleCancel(order)}
-                disabled={cancellingId === order.orderId}
-                className="p-1 hover:bg-red-900/30 rounded text-red-400"
-              >
-                {cancellingId === order.orderId ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <X className="w-4 h-4" />
-                )}
-              </button>
+      <div className="p-4">
+        {myOrders.length === 0 ? (
+          <p className="text-zinc-500 text-xs">No open orders</p>
+        ) : (
+          <div className="space-y-1">
+            <div className="grid grid-cols-5 gap-2 text-[10px] font-medium text-zinc-600 uppercase tracking-wider pb-2">
+              <span>Side</span>
+              <span>Price</span>
+              <span>Amount</span>
+              <span>ID</span>
+              <span></span>
             </div>
-          ))}
-        </div>
-      )}
+            {myOrders.map((order) => (
+              <div
+                key={order.orderId}
+                className="grid grid-cols-5 gap-2 items-center text-xs py-2 border-t border-[#1e1e2e]"
+              >
+                <span
+                  className={`font-medium ${
+                    order.side === "bid" ? "text-emerald-400" : "text-red-400"
+                  }`}
+                >
+                  {order.side === "bid" ? "Buy" : "Sell"}
+                </span>
+                <span className="font-mono text-zinc-300">{order.price.toFixed(4)}</span>
+                <span className="font-mono text-zinc-400">{order.amount.toFixed(4)}</span>
+                <span className="text-zinc-600 font-mono text-[10px]">
+                  #{order.orderId.slice(-4)}
+                </span>
+                <button
+                  onClick={() => handleCancel(order)}
+                  disabled={cancellingId === order.orderId}
+                  className="p-1 hover:bg-red-500/10 rounded text-zinc-500 hover:text-red-400 transition-colors justify-self-end"
+                >
+                  {cancellingId === order.orderId ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <X className="w-3.5 h-3.5" />
+                  )}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

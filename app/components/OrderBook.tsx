@@ -19,98 +19,103 @@ export function OrderBook({ bids, asks, loading, onRefresh }: OrderBookProps) {
   const maxAskAmount = Math.max(...asks.map((a) => a.amount), 1);
 
   return (
-    <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">Order Book</h2>
+    <div className="bg-[#12121a] border border-[#1e1e2e] rounded-xl overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[#1e1e2e]">
+        <h2 className="text-sm font-medium text-white">Order Book</h2>
         <button
           onClick={onRefresh}
           disabled={loading}
-          className="p-2 hover:bg-gray-800 rounded"
+          className="p-1.5 hover:bg-white/5 rounded-md text-zinc-500 hover:text-zinc-300 transition-colors"
         >
-          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
         </button>
       </div>
 
-      {/* Header */}
-      <div className="grid grid-cols-3 gap-2 text-xs text-gray-500 pb-2 border-b border-gray-800">
-        <span>Price</span>
-        <span className="text-right">Amount</span>
-        <span className="text-right">Total</span>
-      </div>
+      <div className="px-4 py-2">
+        {/* Header */}
+        <div className="grid grid-cols-3 gap-2 text-[10px] font-medium text-zinc-600 uppercase tracking-wider pb-2">
+          <span>Price</span>
+          <span className="text-right">Size</span>
+          <span className="text-right">Total</span>
+        </div>
 
-      {/* Asks (sells) - reversed so lowest price is at bottom */}
-      <div className="max-h-48 overflow-y-auto">
-        {asks.length === 0 ? (
-          <div className="py-4 text-center text-gray-500 text-sm">No asks</div>
-        ) : (
-          [...asks].reverse().map((order, i) => (
-            <div
-              key={order.orderId}
-              className="grid grid-cols-3 gap-2 py-1 text-sm relative"
-            >
+        {/* Asks (sells) - reversed so lowest price is at bottom */}
+        <div className="max-h-40 overflow-y-auto">
+          {asks.length === 0 ? (
+            <div className="py-6 text-center text-zinc-600 text-xs">No asks</div>
+          ) : (
+            [...asks].reverse().map((order) => (
               <div
-                className="absolute inset-0 bg-red-500/10"
-                style={{
-                  width: `${(order.amount / maxAskAmount) * 100}%`,
-                  right: 0,
-                  left: "auto",
-                }}
-              />
-              <span className="text-red-400 relative z-10">
-                {formatPrice(order.price)}
-              </span>
-              <span className="text-right relative z-10">
-                {formatAmount(order.amount)}
-              </span>
-              <span className="text-right text-gray-400 relative z-10">
-                {formatPrice(order.price * order.amount)}
+                key={order.orderId}
+                className="grid grid-cols-3 gap-2 py-1 text-xs relative"
+              >
+                <div
+                  className="absolute inset-0 bg-red-500/8 rounded-sm"
+                  style={{
+                    width: `${(order.amount / maxAskAmount) * 100}%`,
+                    right: 0,
+                    left: "auto",
+                  }}
+                />
+                <span className="text-red-400 relative z-10 font-mono">
+                  {formatPrice(order.price)}
+                </span>
+                <span className="text-right relative z-10 font-mono text-zinc-400">
+                  {formatAmount(order.amount)}
+                </span>
+                <span className="text-right text-zinc-500 relative z-10 font-mono">
+                  {formatPrice(order.price * order.amount)}
+                </span>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Spread indicator */}
+        <div className="py-2 my-1 border-y border-[#1e1e2e]">
+          {bids.length > 0 && asks.length > 0 ? (
+            <div className="flex items-center justify-center gap-2 text-xs">
+              <span className="text-zinc-500">Spread:</span>
+              <span className="text-zinc-300 font-mono">
+                {((asks[0]?.price || 0) - (bids[0]?.price || 0)).toFixed(4)}
               </span>
             </div>
-          ))
-        )}
-      </div>
+          ) : (
+            <span className="text-zinc-600 text-xs block text-center">-</span>
+          )}
+        </div>
 
-      {/* Spread indicator */}
-      <div className="py-2 text-center border-y border-gray-800 my-2">
-        {bids.length > 0 && asks.length > 0 ? (
-          <span className="text-gray-400 text-sm">
-            Spread: {((asks[0]?.price || 0) - (bids[0]?.price || 0)).toFixed(4)}
-          </span>
-        ) : (
-          <span className="text-gray-500 text-sm">-</span>
-        )}
-      </div>
-
-      {/* Bids (buys) */}
-      <div className="max-h-48 overflow-y-auto">
-        {bids.length === 0 ? (
-          <div className="py-4 text-center text-gray-500 text-sm">No bids</div>
-        ) : (
-          bids.map((order, i) => (
-            <div
-              key={order.orderId}
-              className="grid grid-cols-3 gap-2 py-1 text-sm relative"
-            >
+        {/* Bids (buys) */}
+        <div className="max-h-40 overflow-y-auto">
+          {bids.length === 0 ? (
+            <div className="py-6 text-center text-zinc-600 text-xs">No bids</div>
+          ) : (
+            bids.map((order) => (
               <div
-                className="absolute inset-0 bg-green-500/10"
-                style={{
-                  width: `${(order.amount / maxBidAmount) * 100}%`,
-                  right: 0,
-                  left: "auto",
-                }}
-              />
-              <span className="text-green-400 relative z-10">
-                {formatPrice(order.price)}
-              </span>
-              <span className="text-right relative z-10">
-                {formatAmount(order.amount)}
-              </span>
-              <span className="text-right text-gray-400 relative z-10">
-                {formatPrice(order.price * order.amount)}
-              </span>
-            </div>
-          ))
-        )}
+                key={order.orderId}
+                className="grid grid-cols-3 gap-2 py-1 text-xs relative"
+              >
+                <div
+                  className="absolute inset-0 bg-emerald-500/8 rounded-sm"
+                  style={{
+                    width: `${(order.amount / maxBidAmount) * 100}%`,
+                    right: 0,
+                    left: "auto",
+                  }}
+                />
+                <span className="text-emerald-400 relative z-10 font-mono">
+                  {formatPrice(order.price)}
+                </span>
+                <span className="text-right relative z-10 font-mono text-zinc-400">
+                  {formatAmount(order.amount)}
+                </span>
+                <span className="text-right text-zinc-500 relative z-10 font-mono">
+                  {formatPrice(order.price * order.amount)}
+                </span>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
