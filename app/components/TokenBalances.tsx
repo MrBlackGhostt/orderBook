@@ -15,6 +15,7 @@ interface TokenBalancesProps {
   quoteMint: PublicKey;
   baseSymbol?: string;
   quoteSymbol?: string;
+  compact?: boolean;
 }
 
 export function TokenBalances({
@@ -22,6 +23,7 @@ export function TokenBalances({
   quoteMint,
   baseSymbol = "BASE",
   quoteSymbol = "QUOTE",
+  compact = false,
 }: TokenBalancesProps) {
   const { publicKey } = useWallet();
   const { connection } = useConnection();
@@ -77,6 +79,13 @@ export function TokenBalances({
   }, [publicKey, baseMint, quoteMint, connection]);
 
   if (!publicKey) {
+    if (compact) {
+      return (
+        <div className="text-gray-500 text-xs">
+          Connect wallet to view balances
+        </div>
+      );
+    }
     return (
       <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
         <div className="flex items-center gap-2 text-gray-400">
@@ -87,6 +96,40 @@ export function TokenBalances({
     );
   }
 
+  // Compact version for header
+  if (compact) {
+    return (
+      <div className="flex items-center gap-4 text-sm">
+        <div className="flex items-center gap-2">
+          <Wallet className="w-4 h-4 text-gray-400" />
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5">
+            <span className="text-gray-400">{baseSymbol}:</span>
+            <span className={`font-mono ${balances.base === 0 ? "text-yellow-400" : "text-white"}`}>
+              {balances.base !== null ? balances.base.toFixed(2) : "---"}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-gray-400">{quoteSymbol}:</span>
+            <span className={`font-mono ${balances.quote === 0 ? "text-yellow-400" : "text-white"}`}>
+              {balances.quote !== null ? balances.quote.toFixed(2) : "---"}
+            </span>
+          </div>
+        </div>
+        <button
+          onClick={fetchBalances}
+          disabled={loading}
+          className="p-1 hover:bg-gray-800 rounded transition-colors disabled:opacity-50"
+          title="Refresh balances"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+        </button>
+      </div>
+    );
+  }
+
+  // Full version
   return (
     <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
       <div className="flex items-center justify-between mb-3">
@@ -116,15 +159,6 @@ export function TokenBalances({
           loading={loading}
         />
       </div>
-
-      {balances.base === 0 && balances.quote === 0 && !loading && (
-        <div className="mt-3 p-3 bg-yellow-900/20 border border-yellow-800/50 rounded">
-          <p className="text-yellow-400 text-xs">
-            ⚠️ You need tokens to trade. Get test tokens from the faucet or
-            contact the market creator.
-          </p>
-        </div>
-      )}
     </div>
   );
 }

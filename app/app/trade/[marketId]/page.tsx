@@ -12,6 +12,7 @@ import { MyOrders } from "@/components/MyOrders";
 import { CrankButton } from "@/components/CrankButton";
 import { TokenBalances } from "@/components/TokenBalances";
 import { NewUserBanner } from "@/components/NewUserBanner";
+import { AirdropButton } from "@/components/AirdropButton";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 
 interface TradingPageProps {
@@ -56,7 +57,7 @@ export default function TradingPage({ params }: TradingPageProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div className="flex items-center space-x-4">
           <Link href="/" className="p-2 hover:bg-gray-800 rounded-lg">
             <ArrowLeft className="w-5 h-5" />
@@ -73,7 +74,7 @@ export default function TradingPage({ params }: TradingPageProps) {
                   {shortenAddress(market.quoteMint)}
                 </span>
                 <a
-                  href={`https://solscan.io/account/${marketId}?cluster=custom&customUrl=http://localhost:8899`}
+                  href={`https://solscan.io/account/${marketId}?cluster=devnet`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-purple-400 hover:text-purple-300"
@@ -84,13 +85,26 @@ export default function TradingPage({ params }: TradingPageProps) {
             )}
           </div>
         </div>
-        {market && (
-          <div className="text-right">
-            <p className="text-gray-400 text-sm">
+        
+        {/* Balances in Header - Compact View */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          {market && connected && (
+            <div className="bg-gray-900/50 border border-gray-800 rounded-lg px-4 py-2">
+              <TokenBalances
+                baseMint={new PublicKey(market.baseMint)}
+                quoteMint={new PublicKey(market.quoteMint)}
+                baseSymbol="BASE"
+                quoteSymbol="QUOTE"
+                compact={true}
+              />
+            </div>
+          )}
+          {market && (
+            <div className="text-sm text-gray-400">
               Fee: {(market.feeBps / 100).toFixed(2)}%
-            </p>
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </div>
 
       {!connected && (
@@ -114,15 +128,16 @@ export default function TradingPage({ params }: TradingPageProps) {
         </div>
 
         {/* Middle: Trade Panel */}
-        <div className="lg:col-span-1 space-y-6">
-          {market && (
-            <TokenBalances
+        <div className="lg:col-span-1 space-y-4">
+          {/* Airdrop Button - Shows when wallet connected */}
+          {market && connected && (
+            <AirdropButton
               baseMint={new PublicKey(market.baseMint)}
               quoteMint={new PublicKey(market.quoteMint)}
-              baseSymbol="BASE"
-              quoteSymbol="QUOTE"
+              onAirdropComplete={refresh}
             />
           )}
+          
           <TradePanel
             market={market}
             onOrderPlaced={refresh}
