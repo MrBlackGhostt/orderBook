@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "OpenDEX - Permissionless Order Book DEX",
+  title: "LimitDEX - On-Chain Limit Order Trading on Solana",
   description: "A permissionless order book DEX on Solana Devnet. Create trading pairs, place limit orders, and trade with full on-chain transparency.",
 };
 

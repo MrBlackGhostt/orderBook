@@ -10,9 +10,9 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* About */}
           <div>
-            <h3 className="text-white font-semibold mb-3">OpenDEX</h3>
-            <p className="text-gray-400 text-sm mb-3">
-              A permissionless order book DEX on Solana. Create trading pairs,
+            <h3 className="text-white font-medium text-sm mb-3">LimitDEX</h3>
+            <p className="text-zinc-500 text-xs leading-relaxed mb-3">
+              On-chain limit order trading on Solana. Create trading pairs,
               place limit orders, and trade with full on-chain transparency.
             </p>
             <div className="flex items-center gap-2">
@@ -113,7 +113,7 @@ export function Footer() {
         <div className="border-t border-gray-800 mt-8 pt-6">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-gray-500 text-sm">
-              © 2026 OpenDEX. Built with Anchor on Solana.
+              © 2026 LimitDEX. Built with Anchor on Solana.
             </p>
             <div className="flex items-center gap-4 text-xs text-gray-500">
               <a
