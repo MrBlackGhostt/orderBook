@@ -8,11 +8,14 @@ skip-lint = false
 [programs.localnet]
 orderbook_dex = "Gvv7atyen9oY1TccNVDb76btjUKwXi6bgmhQZDnaryGg"
 
+[programs.devnet]
+orderbook_dex = "Gvv7atyen9oY1TccNVDb76btjUKwXi6bgmhQZDnaryGg"
+
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

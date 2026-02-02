@@ -68,7 +68,15 @@ impl<'info> MatchOrders<'info> {
             if bid.price >= ask.price {
                 let fill_amount = min(bid.amount, ask.amount);
                 let execution_price = ask.price;
-                let quote_amount = fill_amount * execution_price;
+
+                // Calculate quote amount: (fill_amount * execution_price) / 10^base_decimals
+                // This normalizes the result to quote token units (same fix as place_order.rs)
+                let base_scale = 10u64.pow(self.base_mint.decimals as u32);
+                let quote_amount = fill_amount
+                    .checked_mul(execution_price)
+                    .ok_or(OrderBookError::ErrorInMultiply)?
+                    .checked_div(base_scale)
+                    .ok_or(OrderBookError::ErrorInMultiply)?;
 
                 //Calculate the fee
                 let total_fee = (quote_amount * self.market.fee_bps as u64) / 10000;

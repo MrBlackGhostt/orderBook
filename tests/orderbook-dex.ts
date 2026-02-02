@@ -189,165 +189,165 @@ describe("orderbook-dex", () => {
     assert.equal(orderBookAccount.market.toBase58(), marketPda.toBase58());
   });
 
-  // it("Place order (Bid)", async () => {
-  //   // amount = 1 (1 unit of base)
-  //   // price = 10 (10 units of quote)
-  //   let amount = new anchor.BN(1);
-  //   let price = new anchor.BN(10);
-  //   let side = { bid: {} };
-  //
-  //   const tx = await program.methods
-  //     .placeOrder(price, amount, side)
-  //     .accounts({
-  //       trader: trader.publicKey,
-  //       baseMint: base_mint,
-  //       quoteMint: quote_mint,
-  //       traderBaseMintAccount: trader_base_mint_acc,
-  //       traderQuoteMintAccount: trader_quote_mint_acc,
-  //       // The rest are PDAs resolved by Anchor or inferred
-  //       tokenProgram: TOKEN_PROGRAM_ID,
-  //     })
-  //     .signers([trader])
-  //     .rpc();
-  //
-  //   console.log("Place Order signature", tx);
-  //
-  //   let orderBookAccount = await program.account.orderBook.fetch(orderBookPda);
-  //   console.log("orderBookBids", orderBookAccount.bids[0]);
-  //
-  //   assert.equal(orderBookAccount.bids.length, 1);
-  //   assert.equal(
-  //     orderBookAccount.bids[0].owner.toBase58(),
-  //     trader.publicKey.toBase58()
-  //   );
-  //   assert.equal(orderBookAccount.bids[0].price.toNumber(), 10);
-  // });
-  //
-  // it("Place order (Ask)", async () => {
-  //   // amount = 1 (1 unit of base)
-  //   // price = 12 (12 units of quote) - Selling higher than the bid
-  //   let amount = new anchor.BN(1);
-  //   let price = new anchor.BN(12);
-  //   let side = { ask: {} };
-  //
-  //   const tx = await program.methods
-  //     .placeOrder(price, amount, side)
-  //     .accountsPartial({
-  //       trader: trader.publicKey,
-  //       baseMint: base_mint,
-  //       quoteMint: quote_mint,
-  //       traderBaseMintAccount: trader_base_mint_acc,
-  //       traderQuoteMintAccount: trader_quote_mint_acc,
-  //       market: marketPda,
-  //       orderBook: orderBookPda,
-  //       tokenProgram: TOKEN_PROGRAM_ID,
-  //     })
-  //     .signers([trader])
-  //     .rpc();
-  //
-  //   console.log("Place Ask Order signature", tx);
-  //
-  //   let orderBookAccount = await program.account.orderBook.fetch(orderBookPda);
-  //   console.log("orderBookAsks", orderBookAccount.asks[0]);
-  //
-  //   assert.equal(orderBookAccount.asks.length, 1);
-  //   assert.equal(
-  //     orderBookAccount.asks[0].owner.toBase58(),
-  //     trader.publicKey.toBase58()
-  //   );
-  //   assert.equal(orderBookAccount.asks[0].price.toNumber(), 12);
-  // });
-  //
-  // it("Stress Test", async () => {
-  //   let amount = new anchor.BN(1);
-  //   let price = new anchor.BN(1);
-  //   let side = { bid: {} };
-  //
-  //   for (let i = 1; i <= 49; i++) {
-  //     console.log(`The bid trade no ${i}`);
-  //     const tx = await program.methods
-  //       .placeOrder(price, amount, side)
-  //       .accounts({
-  //         trader: trader.publicKey,
-  //         baseMint: base_mint,
-  //         quoteMint: quote_mint,
-  //         traderBaseMintAccount: trader_base_mint_acc,
-  //         traderQuoteMintAccount: trader_quote_mint_acc,
-  //         tokenProgram: TOKEN_PROGRAM_ID,
-  //       })
-  //       .signers([trader])
-  //       .rpc();
-  //
-  //     await provider.connection.confirmTransaction(tx);
-  //   }
-  //   let orderBookAccount = await program.account.orderBook.fetch(orderBookPda);
-  //
-  //   //See is the orderBookBids are 50 or not
-  //   assert.equal(orderBookAccount.bids.length, 50);
-  //
-  //   try {
-  //     const tx = await program.methods
-  //       .placeOrder(price, amount, side)
-  //       .accounts({
-  //         trader: trader.publicKey,
-  //         baseMint: base_mint,
-  //         quoteMint: quote_mint,
-  //         traderBaseMintAccount: trader_base_mint_acc,
-  //         traderQuoteMintAccount: trader_quote_mint_acc,
-  //         tokenProgram: TOKEN_PROGRAM_ID,
-  //       })
-  //       .signers([trader])
-  //       .rpc();
-  //     await provider.connection.confirmTransaction(tx);
-  //
-  //     assert.fail("Should have failed with OrderBookFull");
-  //   } catch (error) {
-  //     console.log(`ERROR :- {error}`);
-  //     assert.equal(error.error.errorCode.code, "OrderBookFull");
-  //   }
-  // });
-  // it("Cancel Order", async () => {
-  //   let orderId = new anchor.BN(4);
-  //   let side = { bid: {} };
-  //
-  //   let traderQuoteAtaBefore = await provider.connection.getTokenAccountBalance(
-  //     trader_quote_mint_acc
-  //   );
-  //
-  //   const tx = await program.methods
-  //     .cancelOrder(side, orderId)
-  //     .accountsPartial({
-  //       trader: trader.publicKey,
-  //       market: marketPda,
-  //       orderBook: orderBookPda,
-  //       baseMint: base_mint,
-  //       quoteMint: quote_mint,
-  //
-  //       quoteMintVault: quote_mint_valut,
-  //       baseMintVault: base_mint_valut,
-  //       traderBaseMintAccount: trader_base_mint_acc,
-  //       traderQuoteMintAccount: trader_quote_mint_acc,
-  //       tokenProgram: TOKEN_PROGRAM_ID,
-  //     })
-  //     .signers([trader])
-  //     .rpc();
-  //   await provider.connection.confirmTransaction(tx);
-  //
-  //   let orderBookAccount = await program.account.orderBook.fetch(orderBookPda);
-  //
-  //   assert.equal(orderBookAccount.bids.length, 49);
-  //
-  //   let traderQuoteAtaAfter = await provider.connection.getTokenAccountBalance(
-  //     trader_quote_mint_acc
-  //   );
-  //
-  //   assert.isAbove(
-  //     Number(traderQuoteAtaAfter.value.amount),
-  //     Number(traderQuoteAtaBefore.value.amount),
-  //     "token balance is not increase mean refund not happen"
-  //   );
-  // });
-  //
+  it("Place order (Bid)", async () => {
+    // amount = 1 (1 unit of base)
+    // price = 10 (10 units of quote)
+    let amount = new anchor.BN(1);
+    let price = new anchor.BN(10);
+    let side = { bid: {} };
+
+    const tx = await program.methods
+      .placeOrder(price, amount, side)
+      .accounts({
+        trader: trader.publicKey,
+        baseMint: base_mint,
+        quoteMint: quote_mint,
+        traderBaseMintAccount: trader_base_mint_acc,
+        traderQuoteMintAccount: trader_quote_mint_acc,
+        // The rest are PDAs resolved by Anchor or inferred
+        tokenProgram: TOKEN_PROGRAM_ID,
+      })
+      .signers([trader])
+      .rpc();
+
+    console.log("Place Order signature", tx);
+
+    let orderBookAccount = await program.account.orderBook.fetch(orderBookPda);
+    console.log("orderBookBids", orderBookAccount.bids[0]);
+
+    assert.equal(orderBookAccount.bids.length, 1);
+    assert.equal(
+      orderBookAccount.bids[0].owner.toBase58(),
+      trader.publicKey.toBase58()
+    );
+    assert.equal(orderBookAccount.bids[0].price.toNumber(), 10);
+  });
+
+  it("Place order (Ask)", async () => {
+    // amount = 1 (1 unit of base)
+    // price = 12 (12 units of quote) - Selling higher than the bid
+    let amount = new anchor.BN(1);
+    let price = new anchor.BN(12);
+    let side = { ask: {} };
+
+    const tx = await program.methods
+      .placeOrder(price, amount, side)
+      .accountsPartial({
+        trader: trader.publicKey,
+        baseMint: base_mint,
+        quoteMint: quote_mint,
+        traderBaseMintAccount: trader_base_mint_acc,
+        traderQuoteMintAccount: trader_quote_mint_acc,
+        market: marketPda,
+        orderBook: orderBookPda,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      })
+      .signers([trader])
+      .rpc();
+
+    console.log("Place Ask Order signature", tx);
+
+    let orderBookAccount = await program.account.orderBook.fetch(orderBookPda);
+    console.log("orderBookAsks", orderBookAccount.asks[0]);
+
+    assert.equal(orderBookAccount.asks.length, 1);
+    assert.equal(
+      orderBookAccount.asks[0].owner.toBase58(),
+      trader.publicKey.toBase58()
+    );
+    assert.equal(orderBookAccount.asks[0].price.toNumber(), 12);
+  });
+
+  it("Stress Test", async () => {
+    let amount = new anchor.BN(1);
+    let price = new anchor.BN(1);
+    let side = { bid: {} };
+
+    for (let i = 1; i <= 49; i++) {
+      console.log(`The bid trade no ${i}`);
+      const tx = await program.methods
+        .placeOrder(price, amount, side)
+        .accounts({
+          trader: trader.publicKey,
+          baseMint: base_mint,
+          quoteMint: quote_mint,
+          traderBaseMintAccount: trader_base_mint_acc,
+          traderQuoteMintAccount: trader_quote_mint_acc,
+          tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .signers([trader])
+        .rpc();
+
+      await provider.connection.confirmTransaction(tx);
+    }
+    let orderBookAccount = await program.account.orderBook.fetch(orderBookPda);
+
+    //See is the orderBookBids are 50 or not
+    assert.equal(orderBookAccount.bids.length, 50);
+
+    try {
+      const tx = await program.methods
+        .placeOrder(price, amount, side)
+        .accounts({
+          trader: trader.publicKey,
+          baseMint: base_mint,
+          quoteMint: quote_mint,
+          traderBaseMintAccount: trader_base_mint_acc,
+          traderQuoteMintAccount: trader_quote_mint_acc,
+          tokenProgram: TOKEN_PROGRAM_ID,
+        })
+        .signers([trader])
+        .rpc();
+      await provider.connection.confirmTransaction(tx);
+
+      assert.fail("Should have failed with OrderBookFull");
+    } catch (error) {
+      console.log(`ERROR :- {error}`);
+      assert.equal(error.error.errorCode.code, "OrderBookFull");
+    }
+  });
+  it("Cancel Order", async () => {
+    let orderId = new anchor.BN(4);
+    let side = { bid: {} };
+
+    let traderQuoteAtaBefore = await provider.connection.getTokenAccountBalance(
+      trader_quote_mint_acc
+    );
+
+    const tx = await program.methods
+      .cancelOrder(side, orderId)
+      .accountsPartial({
+        trader: trader.publicKey,
+        market: marketPda,
+        orderBook: orderBookPda,
+        baseMint: base_mint,
+        quoteMint: quote_mint,
+
+        quoteMintVault: quote_mint_valut,
+        baseMintVault: base_mint_valut,
+        traderBaseMintAccount: trader_base_mint_acc,
+        traderQuoteMintAccount: trader_quote_mint_acc,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      })
+      .signers([trader])
+      .rpc();
+    await provider.connection.confirmTransaction(tx);
+
+    let orderBookAccount = await program.account.orderBook.fetch(orderBookPda);
+
+    assert.equal(orderBookAccount.bids.length, 49);
+
+    let traderQuoteAtaAfter = await provider.connection.getTokenAccountBalance(
+      trader_quote_mint_acc
+    );
+
+    assert.isAbove(
+      Number(traderQuoteAtaAfter.value.amount),
+      Number(traderQuoteAtaBefore.value.amount),
+      "token balance is not increase mean refund not happen"
+    );
+  });
+
   it("Match Orders - Full Fill (Bid and Ask same amount)", async () => {
     // Create a second trader (asker)
     const asker = anchor.web3.Keypair.generate();

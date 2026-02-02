@@ -1,7 +1,38 @@
+# Anchor
 .anchor
-.DS_Store
 target
 **/*.rs.bk
-node_modules
 test-ledger
+
+# Solana/Anchor - CRITICAL: Never commit keypairs!
+**/*-keypair.json
+*.key
+*.pem
+
+# Node
+node_modules
 .yarn
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables (if you add any)
+.env
+.env.local
+.env*.local
+
+# OS
+.DS_Store
+*.swp
+*.swo
+*~
+
+# IDEs
+.idea
+.vscode
+*.iml
+
+# Build artifacts
+dist
+build
+.cache

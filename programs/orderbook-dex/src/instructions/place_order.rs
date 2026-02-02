@@ -84,7 +84,14 @@ impl<'info> PlaceOrder<'info> {
                     OrderBookError::OrderBookFull
                 );
 
-                let quote_price = amount.checked_mul(price).unwrap();
+                // Calculate quote amount: (amount * price) / 10^base_decimals
+                // This normalizes the result to quote token units
+                let base_scale = 10u64.pow(self.base_mint.decimals as u32);
+                let quote_price = amount
+                    .checked_mul(price)
+                    .ok_or(OrderBookError::ErrorInMultiply)?
+                    .checked_div(base_scale)
+                    .ok_or(OrderBookError::ErrorInMultiply)?;
 
                 let ctx_acc = TransferChecked {
                     from: self.trader_quote_mint_account.to_account_info(),
