@@ -42,12 +42,12 @@ export default function TradingPage({ params }: TradingPageProps) {
       <div className="space-y-4">
         <Link
           href="/"
-          className="inline-flex items-center space-x-2 text-gray-400 hover:text-white"
+          className="inline-flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-sm"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Markets</span>
         </Link>
-        <div className="bg-red-900/30 border border-red-700 rounded-lg p-4 text-red-200">
+        <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3 text-red-300 text-sm">
           Error loading market: {marketError}
         </div>
       </div>
@@ -55,21 +55,21 @@ export default function TradingPage({ params }: TradingPageProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div className="flex items-center space-x-4">
-          <Link href="/" className="p-2 hover:bg-gray-800 rounded-lg">
-            <ArrowLeft className="w-5 h-5" />
+        <div className="flex items-center gap-3">
+          <Link href="/" className="p-2 hover:bg-white/5 rounded-lg transition-colors text-zinc-400 hover:text-white">
+            <ArrowLeft className="w-4 h-4" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold">Trading</h1>
+            <h1 className="text-xl font-semibold text-white">Trading</h1>
             {market && (
-              <div className="flex items-center space-x-2 text-gray-400 text-sm mt-1">
+              <div className="flex items-center gap-2 text-zinc-500 text-xs mt-0.5">
                 <span className="font-mono">
                   {shortenAddress(market.baseMint)}
                 </span>
-                <span>/</span>
+                <span className="text-zinc-600">/</span>
                 <span className="font-mono">
                   {shortenAddress(market.quoteMint)}
                 </span>
@@ -77,9 +77,9 @@ export default function TradingPage({ params }: TradingPageProps) {
                   href={`https://solscan.io/account/${marketId}?cluster=devnet`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-purple-400 hover:text-purple-300"
+                  className="text-blue-400 hover:text-blue-300 transition-colors"
                 >
-                  <ExternalLink className="w-4 h-4" />
+                  <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               </div>
             )}
@@ -89,7 +89,7 @@ export default function TradingPage({ params }: TradingPageProps) {
         {/* Balances in Header - Compact View */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
           {market && connected && (
-            <div className="bg-gray-900/50 border border-gray-800 rounded-lg px-4 py-2">
+            <div className="bg-[#12121a] border border-[#1e1e2e] rounded-lg px-3 py-2">
               <TokenBalances
                 baseMint={new PublicKey(market.baseMint)}
                 quoteMint={new PublicKey(market.quoteMint)}
@@ -100,15 +100,15 @@ export default function TradingPage({ params }: TradingPageProps) {
             </div>
           )}
           {market && (
-            <div className="text-sm text-gray-400">
-              Fee: {(market.feeBps / 100).toFixed(2)}%
+            <div className="text-xs text-zinc-500">
+              Fee: <span className="text-zinc-300">{(market.feeBps / 100).toFixed(2)}%</span>
             </div>
           )}
         </div>
       </div>
 
       {!connected && (
-        <div className="bg-yellow-900/30 border border-yellow-700 rounded-lg p-4 text-yellow-200">
+        <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg px-4 py-3 text-amber-200/90 text-sm">
           Connect your wallet to trade
         </div>
       )}

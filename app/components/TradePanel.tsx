@@ -241,114 +241,120 @@ export function TradePanel({
 
   if (!market) {
     return (
-      <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
-        <p className="text-gray-400 text-center">Loading market...</p>
+      <div className="bg-[#12121a] border border-[#1e1e2e] rounded-xl p-4">
+        <p className="text-zinc-500 text-center text-sm">Loading market...</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
-      <h2 className="text-lg font-semibold mb-4">Place Order</h2>
-
-      {/* Buy/Sell Toggle */}
-      <div className="grid grid-cols-2 gap-2 mb-4">
-        <button
-          onClick={() => setSide("buy")}
-          className={`py-2 rounded-lg font-medium transition-colors ${
-            side === "buy"
-              ? "bg-green-600 text-white"
-              : "bg-gray-800 text-gray-400 hover:bg-gray-700"
-          }`}
-        >
-          Buy
-        </button>
-        <button
-          onClick={() => setSide("sell")}
-          className={`py-2 rounded-lg font-medium transition-colors ${
-            side === "sell"
-              ? "bg-red-600 text-white"
-              : "bg-gray-800 text-gray-400 hover:bg-gray-700"
-          }`}
-        >
-          Sell
-        </button>
+    <div className="bg-[#12121a] border border-[#1e1e2e] rounded-xl overflow-hidden">
+      <div className="px-4 py-3 border-b border-[#1e1e2e]">
+        <h2 className="text-sm font-medium text-white">Place Order</h2>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm text-gray-400 mb-1">Price</label>
-          <input
-            type="number"
-            step="any"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            placeholder="0.00"
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-purple-500"
-            required
-          />
+      <div className="p-4">
+        {/* Buy/Sell Toggle */}
+        <div className="grid grid-cols-2 gap-1 p-1 bg-[#1e1e2e] rounded-lg mb-4">
+          <button
+            onClick={() => setSide("buy")}
+            className={`py-2 rounded-md text-sm font-medium transition-all ${
+              side === "buy"
+                ? "bg-emerald-600 text-white shadow-sm"
+                : "text-zinc-400 hover:text-zinc-200"
+            }`}
+          >
+            Buy
+          </button>
+          <button
+            onClick={() => setSide("sell")}
+            className={`py-2 rounded-md text-sm font-medium transition-all ${
+              side === "sell"
+                ? "bg-red-600 text-white shadow-sm"
+                : "text-zinc-400 hover:text-zinc-200"
+            }`}
+          >
+            Sell
+          </button>
         </div>
 
-        <div>
-          <label className="block text-sm text-gray-400 mb-1">Amount</label>
-          <input
-            type="number"
-            step="any"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="0.00"
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-purple-500"
-            required
-          />
-        </div>
-
-        {price && amount && (
-          <div className="text-sm text-gray-400">
-            Total: {(parseFloat(price) * parseFloat(amount) || 0).toFixed(4)}{" "}
-            {quoteSymbol}
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <div>
+            <label className="block text-xs text-zinc-500 mb-1.5">Price</label>
+            <input
+              type="number"
+              step="any"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              placeholder="0.00"
+              className="w-full px-3 py-2.5 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg text-sm focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-colors"
+              required
+            />
           </div>
-        )}
 
-        {/* Balance info */}
-        {publicKey && (
-          <div className="text-xs text-gray-500 space-y-1">
-            <div className="flex justify-between">
-              <span>Available {baseSymbol}:</span>
-              <span className="font-mono">{balances.base.toFixed(4)}</span>
+          <div>
+            <label className="block text-xs text-zinc-500 mb-1.5">Amount</label>
+            <input
+              type="number"
+              step="any"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="0.00"
+              className="w-full px-3 py-2.5 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg text-sm focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-colors"
+              required
+            />
+          </div>
+
+          {price && amount && (
+            <div className="flex justify-between items-center py-2 px-3 bg-[#1e1e2e] rounded-lg text-sm">
+              <span className="text-zinc-500">Total</span>
+              <span className="font-mono text-zinc-200">
+                {(parseFloat(price) * parseFloat(amount) || 0).toFixed(4)} {quoteSymbol}
+              </span>
             </div>
-            <div className="flex justify-between">
-              <span>Available {quoteSymbol}:</span>
-              <span className="font-mono">{balances.quote.toFixed(4)}</span>
-            </div>
-          </div>
-        )}
-
-        {error && (
-          <div className="bg-red-900/30 border border-red-800 rounded p-3 flex items-start gap-2">
-            <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
-            <div className="text-red-400 text-sm">{error}</div>
-          </div>
-        )}
-
-        <button
-          type="submit"
-          disabled={loading || !publicKey}
-          className={`w-full py-3 rounded-lg font-medium flex items-center justify-center space-x-2 ${
-            side === "buy"
-              ? "bg-green-600 hover:bg-green-700 disabled:bg-green-800"
-              : "bg-red-600 hover:bg-red-700 disabled:bg-red-800"
-          } disabled:cursor-not-allowed`}
-        >
-          {loading ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              <span>Placing Order...</span>
-            </>
-          ) : (
-            <span>{side === "buy" ? "Buy" : "Sell"}</span>
           )}
-        </button>
-      </form>
+
+          {/* Balance info */}
+          {publicKey && (
+            <div className="space-y-1.5 py-2">
+              <div className="flex justify-between text-xs">
+                <span className="text-zinc-500">Available {baseSymbol}</span>
+                <span className="font-mono text-zinc-400">{balances.base.toFixed(4)}</span>
+              </div>
+              <div className="flex justify-between text-xs">
+                <span className="text-zinc-500">Available {quoteSymbol}</span>
+                <span className="font-mono text-zinc-400">{balances.quote.toFixed(4)}</span>
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
+              <div className="text-red-300 text-xs">{error}</div>
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading || !publicKey}
+            className={`w-full py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-colors ${
+              side === "buy"
+                ? "bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-600/50"
+                : "bg-red-600 hover:bg-red-700 disabled:bg-red-600/50"
+            } disabled:cursor-not-allowed text-white`}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Placing Order...</span>
+              </>
+            ) : (
+              <span>{side === "buy" ? `Buy ${baseSymbol}` : `Sell ${baseSymbol}`}</span>
+            )}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

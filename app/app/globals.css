@@ -1,13 +1,29 @@
 @import "tailwindcss";
 
 :root {
-  --background: #030712;
-  --foreground: #f9fafb;
+  --background: #0a0a0f;
+  --foreground: #e5e5e5;
+  --card: #12121a;
+  --card-border: #1e1e2e;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --muted: #71717a;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --warning: #f59e0b;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-border: var(--card-border);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-muted: var(--muted);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -18,15 +34,38 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}
+
 /* Wallet adapter button overrides */
 .wallet-adapter-button {
-  background-color: #9333ea !important;
+  background-color: #3b82f6 !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
 }
 
 .wallet-adapter-button:hover {
-  background-color: #7e22ce !important;
+  background-color: #2563eb !important;
 }
 
 .wallet-adapter-modal-wrapper {
-  background-color: #1f2937 !important;
+  background-color: #12121a !important;
+  border: 1px solid #1e1e2e !important;
 }

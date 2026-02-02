@@ -160,11 +160,11 @@ export function AirdropButton({
   if (!publicKey) return null;
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       <button
         onClick={handleAirdrop}
         disabled={loading}
-        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-800 disabled:cursor-not-allowed rounded-lg font-medium transition-colors"
+        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-600/50 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors text-white"
       >
         {loading ? (
           <>
@@ -180,61 +180,61 @@ export function AirdropButton({
       </button>
 
       {status === "success" && (
-        <div className="bg-green-900/30 border border-green-800 rounded p-3 flex items-start gap-2">
-          <Check className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
-          <div className="text-sm text-green-300">{message}</div>
+        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3 flex items-start gap-2">
+          <Check className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+          <div className="text-xs text-emerald-300">{message}</div>
         </div>
       )}
 
       {status === "error" && (
-        <div className="bg-red-900/30 border border-red-800 rounded p-3 flex items-start gap-2">
+        <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 flex items-start gap-2">
           <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
-          <div className="text-sm text-red-300">{message}</div>
+          <div className="text-xs text-red-300">{message}</div>
         </div>
       )}
 
       {status === "no-authority" && (
-        <div className="bg-yellow-900/30 border border-yellow-800 rounded p-3">
+        <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3">
           <div className="flex items-start gap-2 mb-3">
-            <AlertCircle className="w-4 h-4 text-yellow-400 flex-shrink-0 mt-0.5" />
-            <div className="text-sm text-yellow-300">{message}</div>
+            <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+            <div className="text-xs text-amber-300">{message}</div>
           </div>
-          <div className="text-xs text-yellow-200/90 space-y-2 ml-6">
-            <p className="font-semibold">📋 Step-by-step instructions:</p>
+          <div className="text-[10px] text-amber-200/80 space-y-2 ml-6">
+            <p className="font-medium">CLI Instructions:</p>
             
             <div className="space-y-2">
               <div>
-                <p className="text-yellow-300 font-medium mb-1">1. Get SOL for fees:</p>
-                <div className="bg-yellow-950/50 rounded p-2 font-mono text-[10px]">
+                <p className="text-amber-300/90 mb-1">1. Get SOL for fees:</p>
+                <div className="bg-[#0a0a0f] rounded p-2 font-mono text-amber-200/70">
                   solana airdrop 2
                 </div>
               </div>
 
               <div>
-                <p className="text-yellow-300 font-medium mb-1">2. Create token accounts (if needed):</p>
-                <div className="bg-yellow-950/50 rounded p-2 font-mono text-[10px] space-y-1">
+                <p className="text-amber-300/90 mb-1">2. Create token accounts:</p>
+                <div className="bg-[#0a0a0f] rounded p-2 font-mono text-amber-200/70 space-y-1">
                   <div className="break-all">spl-token create-account {baseMint.toBase58()}</div>
                   <div className="break-all">spl-token create-account {quoteMint.toBase58()}</div>
                 </div>
               </div>
 
               <div>
-                <p className="text-yellow-300 font-medium mb-1">3. Mint test tokens:</p>
-                <div className="bg-yellow-950/50 rounded p-2 font-mono text-[10px] space-y-1">
+                <p className="text-amber-300/90 mb-1">3. Mint test tokens:</p>
+                <div className="bg-[#0a0a0f] rounded p-2 font-mono text-amber-200/70 space-y-1">
                   <div className="break-all">spl-token mint {baseMint.toBase58()} 1000</div>
                   <div className="break-all">spl-token mint {quoteMint.toBase58()} 10000</div>
                 </div>
               </div>
             </div>
 
-            <div className="pt-2 border-t border-yellow-800/50">
+            <div className="pt-2 border-t border-amber-500/20">
               <a
                 href="https://github.com/MrBlackGhostt/orderBook/blob/main/AIRDROP_GUIDE.md"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-yellow-300 hover:text-yellow-200 underline inline-flex items-center gap-1 font-medium"
+                className="text-amber-400 hover:text-amber-300 inline-flex items-center gap-1"
               >
-                View detailed guide with examples
+                View detailed guide
                 <ExternalLink className="w-3 h-3" />
               </a>
             </div>

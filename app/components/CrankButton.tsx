@@ -132,56 +132,61 @@ export function CrankButton({
   };
 
   return (
-    <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
-      <h2 className="text-lg font-semibold mb-4 flex items-center space-x-2">
-        <Zap className="w-5 h-5 text-yellow-400" />
-        <span>Crank (Match Orders)</span>
-      </h2>
+    <div className="bg-[#12121a] border border-[#1e1e2e] rounded-xl overflow-hidden">
+      <div className="px-4 py-3 border-b border-[#1e1e2e] flex items-center gap-2">
+        <Zap className="w-4 h-4 text-amber-400" />
+        <h2 className="text-sm font-medium text-white">Match Orders</h2>
+      </div>
 
-      <p className="text-gray-400 text-sm mb-4">
-        Anyone can match orders and earn 10% of trading fees!
-      </p>
+      <div className="p-4 space-y-3">
+        <p className="text-zinc-500 text-xs">
+          Anyone can match orders and earn 10% of trading fees
+        </p>
 
-      {canMatch && (
-        <div className="bg-green-900/30 border border-green-700 rounded p-2 mb-4 text-green-200 text-sm">
-          Matchable orders detected! Best bid: {bids[0]?.price.toFixed(4)}, Best
-          ask: {asks[0]?.price.toFixed(4)}
-        </div>
-      )}
-
-      <button
-        onClick={handleCrank}
-        disabled={loading || !publicKey || !canMatch}
-        className="w-full py-3 bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded-lg font-medium flex items-center justify-center space-x-2"
-      >
-        {loading ? (
-          <>
-            <Loader2 className="w-5 h-5 animate-spin" />
-            <span>Matching...</span>
-          </>
-        ) : (
-          <>
-            <Zap className="w-5 h-5" />
-            <span>Match Orders</span>
-          </>
+        {canMatch && (
+          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-2.5 text-xs">
+            <span className="text-emerald-300">Matchable orders found</span>
+            <div className="flex gap-3 mt-1 text-emerald-400/80">
+              <span>Bid: {bids[0]?.price.toFixed(4)}</span>
+              <span>Ask: {asks[0]?.price.toFixed(4)}</span>
+            </div>
+          </div>
         )}
-      </button>
 
-      {result && (
-        <p
-          className={`mt-2 text-sm ${
-            result.includes("success") ? "text-green-400" : "text-red-400"
-          }`}
+        <button
+          onClick={handleCrank}
+          disabled={loading || !publicKey || !canMatch}
+          className="w-full py-2.5 bg-amber-500 hover:bg-amber-600 disabled:bg-[#1e1e2e] disabled:text-zinc-600 disabled:cursor-not-allowed rounded-lg text-sm font-medium flex items-center justify-center gap-2 text-black transition-colors"
         >
-          {result}
-        </p>
-      )}
+          {loading ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>Matching...</span>
+            </>
+          ) : (
+            <>
+              <Zap className="w-4 h-4" />
+              <span>Match Orders</span>
+            </>
+          )}
+        </button>
 
-      {!canMatch && bids.length > 0 && asks.length > 0 && (
-        <p className="mt-2 text-gray-500 text-sm">
-          No matchable orders (bid must be {">"}= ask)
-        </p>
-      )}
+        {result && (
+          <p
+            className={`text-xs ${
+              result.includes("success") ? "text-emerald-400" : "text-red-400"
+            }`}
+          >
+            {result}
+          </p>
+        )}
+
+        {!canMatch && bids.length > 0 && asks.length > 0 && (
+          <p className="text-zinc-600 text-xs">
+            No matchable orders (bid must be {">"}= ask)
+          </p>
+        )}
+      </div>
     </div>
   );
 }

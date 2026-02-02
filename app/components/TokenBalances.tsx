@@ -81,16 +81,16 @@ export function TokenBalances({
   if (!publicKey) {
     if (compact) {
       return (
-        <div className="text-gray-500 text-xs">
+        <div className="text-zinc-600 text-xs">
           Connect wallet to view balances
         </div>
       );
     }
     return (
-      <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
-        <div className="flex items-center gap-2 text-gray-400">
-          <Wallet className="w-5 h-5" />
-          <span className="text-sm">Connect wallet to view balances</span>
+      <div className="bg-[#12121a] border border-[#1e1e2e] rounded-xl p-4">
+        <div className="flex items-center gap-2 text-zinc-500">
+          <Wallet className="w-4 h-4" />
+          <span className="text-xs">Connect wallet to view balances</span>
         </div>
       </div>
     );
@@ -99,20 +99,20 @@ export function TokenBalances({
   // Compact version for header
   if (compact) {
     return (
-      <div className="flex items-center gap-4 text-sm">
+      <div className="flex items-center gap-4 text-xs">
         <div className="flex items-center gap-2">
-          <Wallet className="w-4 h-4 text-gray-400" />
+          <Wallet className="w-3.5 h-3.5 text-zinc-500" />
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5">
-            <span className="text-gray-400">{baseSymbol}:</span>
-            <span className={`font-mono ${balances.base === 0 ? "text-yellow-400" : "text-white"}`}>
+            <span className="text-zinc-500">{baseSymbol}:</span>
+            <span className={`font-mono ${balances.base === 0 ? "text-amber-400" : "text-zinc-200"}`}>
               {balances.base !== null ? balances.base.toFixed(2) : "---"}
             </span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="text-gray-400">{quoteSymbol}:</span>
-            <span className={`font-mono ${balances.quote === 0 ? "text-yellow-400" : "text-white"}`}>
+            <span className="text-zinc-500">{quoteSymbol}:</span>
+            <span className={`font-mono ${balances.quote === 0 ? "text-amber-400" : "text-zinc-200"}`}>
               {balances.quote !== null ? balances.quote.toFixed(2) : "---"}
             </span>
           </div>
@@ -120,10 +120,10 @@ export function TokenBalances({
         <button
           onClick={fetchBalances}
           disabled={loading}
-          className="p-1 hover:bg-gray-800 rounded transition-colors disabled:opacity-50"
+          className="p-1 hover:bg-white/5 rounded transition-colors disabled:opacity-50 text-zinc-500"
           title="Refresh balances"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`w-3 h-3 ${loading ? "animate-spin" : ""}`} />
         </button>
       </div>
     );
@@ -131,23 +131,23 @@ export function TokenBalances({
 
   // Full version
   return (
-    <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-4">
-      <div className="flex items-center justify-between mb-3">
+    <div className="bg-[#12121a] border border-[#1e1e2e] rounded-xl overflow-hidden">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[#1e1e2e]">
         <div className="flex items-center gap-2">
-          <Wallet className="w-5 h-5 text-purple-500" />
-          <h3 className="font-semibold">Your Balances</h3>
+          <Wallet className="w-4 h-4 text-blue-400" />
+          <h3 className="text-sm font-medium text-white">Your Balances</h3>
         </div>
         <button
           onClick={fetchBalances}
           disabled={loading}
-          className="p-1.5 hover:bg-gray-800 rounded transition-colors disabled:opacity-50"
+          className="p-1.5 hover:bg-white/5 rounded transition-colors disabled:opacity-50 text-zinc-500"
           title="Refresh balances"
         >
-          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
         </button>
       </div>
 
-      <div className="space-y-2">
+      <div className="p-4 space-y-2">
         <BalanceRow
           label={baseSymbol}
           balance={balances.base}
@@ -174,20 +174,20 @@ function BalanceRow({
 }) {
   const getLowBalanceWarning = () => {
     if (balance === null || loading) return false;
-    return balance < 0.01; // Warn if balance is very low
+    return balance < 0.01;
   };
 
   return (
-    <div className="flex items-center justify-between p-2 bg-gray-800/30 rounded">
-      <span className="text-sm text-gray-400">{label}</span>
+    <div className="flex items-center justify-between p-2.5 bg-[#0a0a0f] rounded-lg">
+      <span className="text-xs text-zinc-500">{label}</span>
       <div className="flex items-center gap-2">
         {loading ? (
-          <span className="text-sm text-gray-500">Loading...</span>
+          <span className="text-xs text-zinc-600">Loading...</span>
         ) : (
           <>
             <span
-              className={`text-sm font-mono ${
-                getLowBalanceWarning() ? "text-yellow-400" : "text-white"
+              className={`text-xs font-mono ${
+                getLowBalanceWarning() ? "text-amber-400" : "text-zinc-200"
               }`}
             >
               {balance !== null ? balance.toLocaleString(undefined, {
@@ -196,9 +196,7 @@ function BalanceRow({
               }) : "---"}
             </span>
             {getLowBalanceWarning() && (
-              <span className="text-xs text-yellow-500" title="Low balance">
-                ⚠️
-              </span>
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" title="Low balance" />
             )}
           </>
         )}

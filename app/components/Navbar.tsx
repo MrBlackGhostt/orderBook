@@ -16,41 +16,40 @@ export function Navbar() {
   }, []);
 
   return (
-    <nav className="border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm">
+    <nav className="border-b border-[#1e1e2e] bg-[#12121a]/80 backdrop-blur-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center space-x-8">
-            <div className="flex items-center space-x-3">
-              <Link href="/" className="text-xl font-bold text-white">
-                OrderBook DEX
+        <div className="flex items-center justify-between h-14">
+          <div className="flex items-center gap-8">
+            <div className="flex items-center gap-3">
+              <Link href="/" className="text-lg font-semibold text-white tracking-tight">
+                OrderBook
               </Link>
-              <span className="px-2 py-0.5 bg-orange-600/20 border border-orange-600/50 rounded text-orange-400 text-xs font-medium">
-                DEVNET
+              <span className="px-1.5 py-0.5 bg-amber-500/10 border border-amber-500/30 rounded text-amber-400 text-[10px] font-medium uppercase tracking-wider">
+                Devnet
               </span>
             </div>
-            <div className="hidden md:flex space-x-4">
+            <div className="hidden md:flex items-center gap-1">
               <Link
                 href="/"
-                className="text-gray-300 hover:text-white px-3 py-2 text-sm"
+                className="text-zinc-400 hover:text-white hover:bg-white/5 px-3 py-1.5 rounded-md text-sm transition-colors"
               >
                 Markets
               </Link>
               <Link
                 href="/create"
-                className="text-gray-300 hover:text-white px-3 py-2 text-sm"
+                className="text-zinc-400 hover:text-white hover:bg-white/5 px-3 py-1.5 rounded-md text-sm transition-colors"
               >
-                Create Market
+                Create
               </Link>
             </div>
           </div>
-          <div className="flex items-center space-x-4">
-            {/* Social Links */}
-            <div className="hidden sm:flex items-center space-x-2">
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-1">
               <a
                 href="https://x.com/HKsoldev"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+                className="p-2 text-zinc-500 hover:text-white hover:bg-white/5 rounded-md transition-colors"
                 title="Follow on X/Twitter"
               >
                 <Twitter className="w-4 h-4" />
@@ -59,7 +58,7 @@ export function Navbar() {
                 href="https://github.com/MrBlackGhostt"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+                className="p-2 text-zinc-500 hover:text-white hover:bg-white/5 rounded-md transition-colors"
                 title="GitHub Profile"
               >
                 <Github className="w-4 h-4" />
@@ -67,14 +66,15 @@ export function Navbar() {
             </div>
 
             {mounted && connected && (
-              <span className="text-green-400 text-sm hidden lg:inline">
-                Connected
-              </span>
+              <div className="hidden lg:flex items-center gap-1.5 text-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span className="text-zinc-400">Connected</span>
+              </div>
             )}
             {mounted ? (
-              <WalletMultiButton className="!bg-purple-600 hover:!bg-purple-700" />
+              <WalletMultiButton className="!bg-blue-600 hover:!bg-blue-700 !rounded-lg !h-9 !text-sm !font-medium" />
             ) : (
-              <div className="h-10 w-32 bg-purple-600 rounded-lg animate-pulse" />
+              <div className="h-9 w-32 bg-blue-600/50 rounded-lg animate-pulse" />
             )}
           </div>
         </div>
