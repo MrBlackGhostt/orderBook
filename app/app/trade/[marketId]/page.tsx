@@ -3,12 +3,15 @@
 import { use } from "react";
 import Link from "next/link";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
 import { useMarket } from "@/hooks/useMarket";
 import { useOrderBook } from "@/hooks/useOrderBook";
 import { OrderBook } from "@/components/OrderBook";
 import { TradePanel } from "@/components/TradePanel";
 import { MyOrders } from "@/components/MyOrders";
 import { CrankButton } from "@/components/CrankButton";
+import { TokenBalances } from "@/components/TokenBalances";
+import { NewUserBanner } from "@/components/NewUserBanner";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 
 interface TradingPageProps {
@@ -96,6 +99,8 @@ export default function TradingPage({ params }: TradingPageProps) {
         </div>
       )}
 
+      {connected && <NewUserBanner />}
+
       {/* Trading Interface */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left: Order Book */}
@@ -110,7 +115,20 @@ export default function TradingPage({ params }: TradingPageProps) {
 
         {/* Middle: Trade Panel */}
         <div className="lg:col-span-1 space-y-6">
-          <TradePanel market={market} onOrderPlaced={refresh} />
+          {market && (
+            <TokenBalances
+              baseMint={new PublicKey(market.baseMint)}
+              quoteMint={new PublicKey(market.quoteMint)}
+              baseSymbol="BASE"
+              quoteSymbol="QUOTE"
+            />
+          )}
+          <TradePanel
+            market={market}
+            onOrderPlaced={refresh}
+            baseSymbol="BASE"
+            quoteSymbol="QUOTE"
+          />
           <CrankButton
             market={market}
             bids={bids}
