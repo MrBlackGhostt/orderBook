@@ -80,51 +80,74 @@ export function AirdropButton({
         await connection.confirmTransaction(sig, "confirmed");
       }
 
-      // Try to mint tokens (this will fail if user is not mint authority)
-      // This is just for demo - in production you'd call a backend API
-      const mintTx = new Transaction();
+      // Check if user is the mint authority by checking mint account
+      const baseMintInfo = await connection.getAccountInfo(baseMint);
+      const quoteMintInfo = await connection.getAccountInfo(quoteMint);
 
-      // Attempt to mint BASE tokens (1000 with 9 decimals)
-      const baseAmount = new BN(1000).mul(new BN(10).pow(new BN(9)));
-      mintTx.add(
-        createMintToInstruction(
-          baseMint,
-          baseAta,
-          publicKey, // mint authority (will fail if not authority)
-          BigInt(baseAmount.toString())
-        )
-      );
+      if (!baseMintInfo || !quoteMintInfo) {
+        throw new Error("Could not fetch mint information");
+      }
 
-      // Attempt to mint QUOTE tokens (10000 with 6 decimals)
-      const quoteAmount = new BN(10000).mul(new BN(10).pow(new BN(6)));
-      mintTx.add(
-        createMintToInstruction(
-          quoteMint,
-          quoteAta,
-          publicKey, // mint authority (will fail if not authority)
-          BigInt(quoteAmount.toString())
-        )
-      );
+      // For SPL tokens, mint authority is at offset 4-36 in the account data
+      // We'll try to mint, and if it fails, show CLI instructions
+      try {
+        const mintTx = new Transaction();
 
-      const mintSig = await sendTransaction(mintTx, connection);
-      await connection.confirmTransaction(mintSig, "confirmed");
+        // Attempt to mint BASE tokens (1000 with 9 decimals)
+        const baseAmount = new BN(1000).mul(new BN(10).pow(new BN(9)));
+        mintTx.add(
+          createMintToInstruction(
+            baseMint,
+            baseAta,
+            publicKey, // mint authority (will fail if not authority)
+            BigInt(baseAmount.toString())
+          )
+        );
 
-      setStatus("success");
-      setMessage("Successfully airdropped 1000 BASE and 10000 QUOTE tokens!");
-      onAirdropComplete?.();
+        // Attempt to mint QUOTE tokens (10000 with 6 decimals)
+        const quoteAmount = new BN(10000).mul(new BN(10).pow(new BN(6)));
+        mintTx.add(
+          createMintToInstruction(
+            quoteMint,
+            quoteAta,
+            publicKey, // mint authority (will fail if not authority)
+            BigInt(quoteAmount.toString())
+          )
+        );
+
+        const mintSig = await sendTransaction(mintTx, connection);
+        await connection.confirmTransaction(mintSig, "confirmed");
+
+        setStatus("success");
+        setMessage("Successfully airdropped 1000 BASE and 10000 QUOTE tokens!");
+        onAirdropComplete?.();
+      } catch (mintError: any) {
+        // Minting failed - likely not mint authority
+        console.error("Mint error:", mintError);
+        throw new Error("not_authority");
+      }
     } catch (err: any) {
       console.error("Airdrop error:", err);
 
       // Check if it's a mint authority error
       if (
+        err.message === "not_authority" ||
         err.message?.includes("owner does not match") ||
         err.message?.includes("incorrect authority") ||
-        err.logs?.some((log: string) => log.includes("owner does not match"))
+        err.message?.includes("Error processing Instruction") ||
+        err.logs?.some((log: string) => 
+          log.includes("owner does not match") || 
+          log.includes("incorrect program") ||
+          log.includes("custom program error")
+        )
       ) {
         setStatus("no-authority");
         setMessage(
-          "You're not the mint authority. Use CLI commands or contact the developer."
+          "You're not the mint authority. Use CLI commands below to get tokens."
         );
+      } else if (err.message?.includes("User rejected")) {
+        setStatus("error");
+        setMessage("Transaction cancelled by user");
       } else {
         setStatus("error");
         setMessage(err.message || "Failed to airdrop tokens");
@@ -172,25 +195,49 @@ export function AirdropButton({
 
       {status === "no-authority" && (
         <div className="bg-yellow-900/30 border border-yellow-800 rounded p-3">
-          <div className="flex items-start gap-2 mb-2">
+          <div className="flex items-start gap-2 mb-3">
             <AlertCircle className="w-4 h-4 text-yellow-400 flex-shrink-0 mt-0.5" />
             <div className="text-sm text-yellow-300">{message}</div>
           </div>
-          <div className="text-xs text-yellow-200/80 space-y-1 ml-6">
-            <p className="font-medium">Use these CLI commands instead:</p>
-            <div className="bg-yellow-950/50 rounded p-2 font-mono text-[10px] space-y-0.5">
-              <div>spl-token mint {baseMint.toBase58().slice(0, 20)}... 1000</div>
-              <div>spl-token mint {quoteMint.toBase58().slice(0, 20)}... 10000</div>
+          <div className="text-xs text-yellow-200/90 space-y-2 ml-6">
+            <p className="font-semibold">📋 Step-by-step instructions:</p>
+            
+            <div className="space-y-2">
+              <div>
+                <p className="text-yellow-300 font-medium mb-1">1. Get SOL for fees:</p>
+                <div className="bg-yellow-950/50 rounded p-2 font-mono text-[10px]">
+                  solana airdrop 2
+                </div>
+              </div>
+
+              <div>
+                <p className="text-yellow-300 font-medium mb-1">2. Create token accounts (if needed):</p>
+                <div className="bg-yellow-950/50 rounded p-2 font-mono text-[10px] space-y-1">
+                  <div className="break-all">spl-token create-account {baseMint.toBase58()}</div>
+                  <div className="break-all">spl-token create-account {quoteMint.toBase58()}</div>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-yellow-300 font-medium mb-1">3. Mint test tokens:</p>
+                <div className="bg-yellow-950/50 rounded p-2 font-mono text-[10px] space-y-1">
+                  <div className="break-all">spl-token mint {baseMint.toBase58()} 1000</div>
+                  <div className="break-all">spl-token mint {quoteMint.toBase58()} 10000</div>
+                </div>
+              </div>
             </div>
-            <a
-              href="https://github.com/MrBlackGhostt/orderBook/blob/main/AIRDROP_GUIDE.md"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-yellow-300 hover:text-yellow-200 underline inline-flex items-center gap-1 mt-1"
-            >
-              View full guide
-              <ExternalLink className="w-3 h-3" />
-            </a>
+
+            <div className="pt-2 border-t border-yellow-800/50">
+              <a
+                href="https://github.com/MrBlackGhostt/orderBook/blob/main/AIRDROP_GUIDE.md"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-yellow-300 hover:text-yellow-200 underline inline-flex items-center gap-1 font-medium"
+              >
+                View detailed guide with examples
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
           </div>
         </div>
       )}
